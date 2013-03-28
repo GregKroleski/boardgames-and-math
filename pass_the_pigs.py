@@ -63,6 +63,7 @@ def play_a_round(limit=17):
 
 
 def play_pass_the_pigs(limit=17):
+    '''Plays a game of pass the pigs using the limit as a risk threshold'''
     num_rounds = 0
     total_score = 0
     while total_score < 100:
