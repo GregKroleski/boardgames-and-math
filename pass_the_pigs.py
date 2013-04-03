@@ -1,3 +1,5 @@
+from collections import defaultdict
+from matplotlib import pyplot as plt
 from random import random
 
 PIG_PROBABILITIES = [
@@ -51,7 +53,7 @@ def roll_the_pigs(current_round_score):
         return current_round_score + PIG_POINTS[results[0]] + PIG_POINTS[results[1]]
 
 
-def play_a_round(limit=17):
+def play_a_round(limit):
     '''Optionall takes in a limit and then plays the round, returning
     an integer or None'''
     current_round_score = 0
@@ -67,8 +69,10 @@ def play_pass_the_pigs(limit=17):
     num_rounds = 0
     total_score = 0
     while total_score < 100:
-        print total_score
-        round_score = play_a_round()
+        # print total_score
+        if 100 - total_score < limit:
+            limit = 100 - total_score
+        round_score = play_a_round(limit)
         if not round_score:
             pass
         else:
@@ -77,5 +81,19 @@ def play_pass_the_pigs(limit=17):
     return total_score, num_rounds
 
 
+def run_threshold_simulation():
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    result_dict = defaultdict(list)
+    for threshold in range(0, 101):
+        # Run each simulation 1000 times
+        for i in range(1, 1000):
+            total_score, num_rounds = play_pass_the_pigs(limit=threshold)
+            result_dict[threshold].append(num_rounds)
+    ax.boxplot(result_dict)
+    plt.tight_layout()
+    plt.show()
+
+
 if __name__ == '__main__':
-    print play_pass_the_pigs(limit=17)
+    run_threshold_simulation()
