@@ -1,5 +1,6 @@
 from collections import defaultdict
 from matplotlib import pyplot as plt
+from matplotlib.pylab import *
 from random import random
 
 PIG_PROBABILITIES = [
@@ -95,5 +96,39 @@ def run_threshold_simulation():
     plt.show()
 
 
+def play_against_eachother(player_1_limit, player_2_limit):
+    p1_score, p1_turns = play_pass_the_pigs(limit=player_1_limit)
+    p2_score, p2_turns = play_pass_the_pigs(limit=player_2_limit)
+    # Less than or equal because p1 goes first
+    if p1_turns <= p2_turns:
+        return 1
+    else:
+        return 2
+
+
+def run_strategy_comparison(player_1_limit, player_2_limit):
+    p1_wins = 0
+    p2_wins = 0
+    for i in range(0, 300):
+        result = play_against_eachother(player_1_limit, player_2_limit)
+        if result == 1:
+            p1_wins += 1
+        else:
+            p2_wins += 1
+    return  p1_wins / float(p2_wins + p1_wins)
+
+
+def run_strategy_comparison_simulation():
+    result_array = []
+    play_range = range(0, 100)
+    for player_1 in play_range:
+        player_result = []
+        for player_2 in play_range:
+            result = run_strategy_comparison(player_1, player_2)
+            player_result.append(result)
+        result_array.append(player_result)
+    matshow(result_array, cmap=cm.RdYlGn)
+    plt.show()
+
 if __name__ == '__main__':
-    run_threshold_simulation()
+    run_strategy_comparison_simulation()
